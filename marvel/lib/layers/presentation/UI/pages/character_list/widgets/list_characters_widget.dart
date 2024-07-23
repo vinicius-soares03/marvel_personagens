@@ -24,80 +24,85 @@ class _ListCharactersWidgetState extends State<ListCharactersWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ListView.builder(
-          controller: ScrollController(),
-          itemCount: _controller.filterList().length,
-          itemBuilder: (context, index) {
-            CharacterDto item = _controller.filterList()[index];
-            //String iconPath = _bloc!.getRandomUserIcon();
-            return Container(
-              margin: const EdgeInsets.only(left: 16, right: 16),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          CharacterDetailPage(character: item),
+        child: _controller.filterList().isEmpty
+            ? Container(
+                alignment: Alignment.center,
+                child: Text("No results found"),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                controller: ScrollController(),
+                itemCount: _controller.filterList().length,
+                itemBuilder: (context, index) {
+                  CharacterDto item = _controller.filterList()[index];
+                  return Container(
+                    margin: const EdgeInsets.only(left: 16, right: 16),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CharacterDetailPage(character: item),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 16, left: 0),
+                            padding: EdgeInsets.zero,
+                            child: Stack(children: [
+                              Card(
+                                //semanticContainer: true,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                elevation: 5,
+
+                                child: Container(
+                                  height: 200,
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  child: Image.network(
+                                    "${item.thumbnail?.path}.${item.thumbnail?.extension}",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.only(left: 32, top: 32),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Text("${item.name}",
+                                        style: const TextStyle(
+                                            color: Colors.white))),
+                              ),
+                            ]),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 16),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "${item.description == "" ? "Description not found" : item.description}",
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   );
-
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 16, left: 0),
-                      padding: EdgeInsets.zero,
-                      child: Stack(children: [
-                        Card(
-                          //semanticContainer: true,
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          elevation: 5,
-
-                          child: Container(
-                            height: 200,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Image.network(
-                              "${item.thumbnail?.path}.${item.thumbnail?.extension}",
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 32, top: 32),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Container(
-                              padding: const EdgeInsets.all(8),
-                              child: Text("${item.name}",
-                                  style: const TextStyle(color: Colors.white))),
-                        ),
-                      ]),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 16),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "${item.description == "" ? "Description not found" : item.description}",
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            );
-          }),
-    );
+                }));
   }
 }
