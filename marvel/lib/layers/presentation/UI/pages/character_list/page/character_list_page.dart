@@ -6,6 +6,7 @@ import 'package:marvel/inject/inject.dart';
 import 'package:marvel/layers/presentation/UI/pages/character_list/widgets/list_characters_widget.dart';
 
 import '../../../../controllers/character_list_page_controller.dart';
+import '../widgets/pagination_widget.dart';
 
 class CharacterListPage extends StatefulWidget {
   const CharacterListPage({Key? key}) : super(key: key);
@@ -47,16 +48,16 @@ class _CharacterListPageState extends State<CharacterListPage> {
         ),
         title: const Text('Marvel Characters'),
         actions: [
-          // Container(
-          //   padding: const EdgeInsets.only(right: 16),
-          //   child: IconButton(
-          //       onPressed: () {
-          //       //  _bloc!.reloadPostList();
-          //       },
-          //       icon: Icon(FontAwesomeIcons.arrowRotateLeft)),
-          // )
+
         ],
         centerTitle: false,
+      ),
+      bottomSheet: PaginationWidget(
+        onPageSelected: (int value) {
+          _controller.page = value;
+          _controller.getAllCharacters();
+        },
+        
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -80,20 +81,19 @@ class _CharacterListPageState extends State<CharacterListPage> {
                           cursorColor: Colors.transparent,
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.search),
-                            hintText: "Search a hero...",
+                            hintText: "search for a character...",
                             contentPadding: EdgeInsets.only(left: 8),
                             enabledBorder: InputBorder.none,
                             focusedBorder: InputBorder.none,
                             errorBorder: InputBorder.none,
                           ),
                           onChanged: (_) {
-                           
                             _controller.filterList();
                           },
                         ),
                       )),
                   Container(
-                      height: MediaQuery.of(context).size.height * 0.9,
+                      padding: EdgeInsets.only(bottom: 128),
                       width: MediaQuery.of(context).size.width,
                       child: _controller.processing == true
                           ? Center(child: CircularProgressIndicator())

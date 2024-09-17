@@ -21,21 +21,31 @@ class CharacterListPageController extends GetxController {
   List<CharacterDto> caracterList = [];
   bool processing = false;
   int page = 1;
+  int? totalCharacters = 0;
+  int limitPage = 10;
+  int? totalPages = 10;
+
   TextEditingController nameForSearch = TextEditingController();
   List<CharacterDto> charactersFound = [];
 
-  List<CharacterDto> filterList() { 
-    List<CharacterDto> filteredList =
-        caracterList.where((hero) => hero.name!.contains(nameForSearch.text)).toList();
+  List<CharacterDto> filterList() {
+    List<CharacterDto> filteredList = caracterList
+        .where((hero) => hero.name!.toLowerCase().contains(nameForSearch.text.toLowerCase()))
+        .toList();
     return filteredList;
   }
 
-
-
-
   Future<void> getAllCharacters() async {
+    processing = true;
+    caracterList.clear();
+    update();
     final request = await _getAllCharacters(page: page);
-    caracterList.addAll(request ?? []);
+    if (request != null && request.results!.isNotEmpty) {
+      totalCharacters = request.total ?? 0;
+      totalPages = (totalCharacters! / limitPage).ceil();
+    }
+    processing = false;
+    caracterList.addAll(request?.results ?? []);
     update();
   }
 }

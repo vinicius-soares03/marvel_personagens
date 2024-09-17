@@ -4,6 +4,7 @@ import 'package:marvel/layers/data/datasources/local/local_storage.dart';
 import 'package:marvel/layers/domain/entities/character_entity.dart';
 
 import '../domain/repositories/character_repository.dart';
+import 'DTOs/character/list_character_dto.dart';
 
 class CharacterRepositoryImpl implements CharacterRepository {
   final Service _service;
@@ -16,12 +17,19 @@ class CharacterRepositoryImpl implements CharacterRepository {
         _localStorage = localStorage;
 
   @override
-  Future<List<CharacterDto>?> getCharacters({int page = 0}) async {
-    // //TESTE, MUDAR PARA CHAMADA COM DIO
-    //List<CharacterEntity> list = [CharacterEntity(id: 1, name: 'teste')];
-
-    final request = await _service.getCharacterList();
+  Future<ListCharacterDTO?> getCharacters({required int page}) async {
    
+    final listFromCache = await _localStorage.getListCharacters(page: page);
+    if (listFromCache != null && listFromCache.results!.isNotEmpty) {
+      return listFromCache;
+    }
+
+    final request = await _service.getCharacterList(page: page);
+
+    if (request != null && request.results!.isNotEmpty) {
+      await _localStorage.saveListCharacters(page: page, list: request);
+    }
+
     return request;
   }
 }

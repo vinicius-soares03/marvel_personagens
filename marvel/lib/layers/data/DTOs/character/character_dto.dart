@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:marvel/layers/data/DTOs/character/character_thumbnail.dart';
 import 'package:marvel/layers/domain/entities/character_entity.dart';
 
@@ -12,8 +14,17 @@ class CharacterDto extends CharacterEntity {
   CharacterDto({
     super.id,
     super.name,
+    super.description,
+    super.modified,
+    thumbnail,
     this.resourceUri,
   });
+
+  factory CharacterDto.fromRawJson(String str) =>
+      CharacterDto.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toMap());
+
 
   CharacterDto.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -38,6 +49,49 @@ class CharacterDto extends CharacterEntity {
         urls!.add(new Url.fromJson(v));
       });
     }
+  }
+   Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['description'] = description;
+    data['modified'] = modified;
+    if (thumbnail != null) {
+      data['thumbnail'] = thumbnail!.toJson();
+    }
+    data['resourceURI'] = resourceUri;
+    if (comics != null) {
+      data['comics'] = comics!.toMap();
+    }
+    if (series != null) {
+      data['series'] = series!.toMap();
+    }
+    if (stories != null) {
+      data['stories'] = stories!.toMap();
+    }
+    if (events != null) {
+      data['events'] = events!.toMap();
+    }
+    if (urls != null) {
+      data['urls'] = urls!.map((v) => v.toMap()).toList();
+    }
+    return data;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'modified': modified,
+      'description': description,
+      'name': name,
+      'resourceUri': resourceUri,
+      'comics': comics?.toMap(),
+      'series': series?.toMap(),
+      'stories': stories?.toMap(),
+      'thumbnail': thumbnail?.toMap(),
+      'events': events?.toMap(),
+      'urls': urls?.map((url) => url.toMap()).toList(),
+    };
   }
 }
 
@@ -64,6 +118,14 @@ class Comics {
     }
     returned = json['returned'];
   }
+  Map<String, dynamic> toMap() {
+    return {
+      'available': available,
+      'collectionUri': collectionUri,
+      'items': items?.map((item) => item.toMap()).toList(),
+      'returned': returned,
+    };
+  }
 }
 
 class ComicsItem {
@@ -77,6 +139,12 @@ class ComicsItem {
   ComicsItem.fromJson(Map<String, dynamic> json) {
     resourceUri = json['resourceURI'];
     name = json['name'];
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'resourceUri': resourceUri,
+      'name': name,
+    };
   }
 }
 
@@ -103,6 +171,15 @@ class Stories {
     }
     returned = json['returned'];
   }
+
+    Map<String, dynamic> toMap() {
+    return {
+      'available': available,
+      'collectionUri': collectionUri,
+      'items': items?.map((item) => item.toMap()).toList(),
+      'returned': returned,
+    };
+  }
 }
 
 class StoriesItem {
@@ -120,6 +197,13 @@ class StoriesItem {
     resourceUri = json['resourceURI'];
     name = json['name'];
   }
+    Map<String, dynamic> toMap() {
+    return {
+      'resourceUri': resourceUri,
+      'name': name,
+      'type': type,
+    };
+  }
 }
 
 class Url {
@@ -130,8 +214,14 @@ class Url {
     this.type,
     this.url,
   });
-   Url.fromJson(Map<String, dynamic> json) {
+  Url.fromJson(Map<String, dynamic> json) {
     type = json['type'];
     url = json['url'];
+  }
+    Map<String, dynamic> toMap() {
+    return {
+      'type': type,
+      'url': url,
+    };
   }
 }

@@ -19,4 +19,11 @@ class Thumbnail {
     return data;
   }
 
+  Map<String, dynamic> toMap() {
+  final Map<String, dynamic> data = new Map<String, dynamic>();
+  data['path'] = this.path;
+  data['extension'] = this.extension;
+  return data;
+}
+
 }

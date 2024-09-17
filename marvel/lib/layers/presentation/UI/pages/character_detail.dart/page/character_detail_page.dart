@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:marvel/layers/domain/entities/character_entity.dart';
 
 import '../../../../../data/DTOs/character/character_dto.dart';
@@ -20,11 +21,19 @@ class _CharacterDetailPageState extends State<CharacterDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          toolbarHeight: 80,
+          backgroundColor: Color(0xFF16202a),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(FontAwesomeIcons.chevronLeft)),
+        ),
         body: SingleChildScrollView(
           controller: ScrollController(),
           child: Container(
-            margin: EdgeInsets.only(left: 16,right: 16),
+            margin: EdgeInsets.only(left: 16, right: 16),
             child: Column(
               children: [
                 //image
